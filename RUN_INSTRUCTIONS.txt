@@ -1,0 +1,75 @@
+===================================================================
+  EV CHARGING STATION DASHBOARD — RASPBERRY PI 4 SETUP & RUN GUIDE
+===================================================================
+
+STEP 1: NAVIGATE TO PROJECT FOLDER
+----------------------------------
+Open terminal on Raspberry Pi and enter your project folder:
+
+  cd ~/Desktop/EV_Website-main
+
+
+STEP 2: CREATE VIRTUAL ENVIRONMENT (VENV) & INSTALL PACKAGES
+------------------------------------------------------------
+Run these commands to create and set up 'venv':
+
+  sudo apt update
+  sudo apt install -y python3-pip python3-venv chromium-browser
+  python3 -m venv venv
+  source venv/bin/activate
+  pip install --upgrade pip
+  pip install flask dalybms minimalmodbus pyserial
+
+
+STEP 3: GRANT USB SERIAL PERMISSIONS
+------------------------------------
+Run these commands to grant permissions for BMS (/dev/ttyUSB0) & Meter (/dev/ttyUSB1):
+
+  sudo usermod -a -G dialout $USER
+  sudo chmod 666 /dev/ttyUSB0 /dev/ttyUSB1
+
+
+STEP 4: ACTIVATE VENV & RUN FLASK SERVER (com.py)
+-------------------------------------------------
+Every time you want to run the python file, activate venv first:
+
+  source venv/bin/activate
+  python com.py
+
+
+STEP 5: OPEN ON RASPBERRY PI 4 DISPLAY (FULLSCREEN KIOSK MODE)
+--------------------------------------------------------------
+Open a new terminal window or tab and launch Chromium in Kiosk mode for your 10.1" screen:
+
+  chromium-browser --kiosk http://localhost:5000
+
+
+===================================================================
+  AUTOMATED 1-CLICK LAUNCH SCRIPT (ALTERNATIVE)
+===================================================================
+You can also run everything automatically in 1 click:
+
+  chmod +x setup.sh start.sh enable_autostart.sh
+  ./setup.sh    (Run once to install venv)
+  ./start.sh    (Launches venv, com.py, and opens full screen display)
+
+
+===================================================================
+  HOW TO MAKE DASHBOARD RUN AUTOMATICALLY ON BOOT (DISPLAY TURN ON)
+===================================================================
+To make the EV Dashboard website start automatically whenever the 
+Raspberry Pi 4 powers on / turns on:
+
+1. Run this command once in your terminal:
+
+   chmod +x enable_autostart.sh
+   ./enable_autostart.sh
+
+2. That's it! Reboot your Raspberry Pi:
+
+   sudo reboot
+
+When your display powers back on, the system will automatically:
+  - Activate 'venv'
+  - Start Flask backend ('com.py')
+  - Open Chromium in Fullscreen Kiosk Mode displaying the EV Dashboard!
